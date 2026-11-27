@@ -213,7 +213,13 @@ try {
   await ctx.accountPool.removeAccount('automatic-loomy')
   creds.delete('AUTO_LOOMY_FIXTURE')
   console.log(`ok  ${sourceMode ? 'source modules' : 'generated pack'}: 10 providers, no OpenCode registration/warmup, historical data retained, account RPCs refused`)
-  if (sourceMode) await verifySourceRegressions({ ctx, adapters, call, creds })
+  if (sourceMode) {
+    const { verifyGeminiManualRpc } = await import('./gemini-manual-rpc-test.mjs')
+    await verifyGeminiManualRpc(call)
+    const { verifyChannelCompatibility } = await import('./channel-compatibility-test.mjs')
+    await verifyChannelCompatibility({ adapters, outletState })
+    await verifySourceRegressions({ ctx, adapters, call, creds })
+  }
   await verifyChannelCreditsRpc({ ctx, call, creds, adapters, outletState })
   console.log('ok  实际渠道 RPC：七渠道仅账号池凭据即可查余额，ZCode 账号池回退及缺凭据反馈')
 
@@ -988,14 +994,28 @@ async function verifySourceRegressions({ ctx, adapters, call, creds }) {
     const cutArgs = await collect(consume(response(frame({ tool_calls: [
       { index: 0, id: 'call-1', function: { name: 'read', arguments: '{"pattern": "un' } },
     ] }, 'tool_calls'))))
-    assert.equal(cutArgs.at(-1).reason.kind, 'max-tokens', `${provider}: an unclosed string is still a cut`)
+    assert.equal(cutArgs.at(-1).reason.kind, provider === 'trae' ? 'error' : 'max-tokens', `${provider}: a completed malformed tool is not a token limit`)
+    if (provider === 'trae') assert.equal(cutArgs.at(-1).reason.failure.code, 'TOOL_ARGUMENTS_INVALID')
     // A negative depth is the lost-prefix fragment (`"path.txt"}` — both
     // quotes present, the opening `{` lost) — still a cut, it belongs on the
     // proven retry path.
     const lostPrefix = await collect(consume(response(frame({ tool_calls: [
       { index: 0, id: 'call-1', function: { name: 'read', arguments: '"some/path.txt"}' } },
     ] }, 'tool_calls'))))
-    assert.equal(lostPrefix.at(-1).reason.kind, 'max-tokens', `${provider}: a lost-prefix fragment is still a cut`)
+    assert.equal(lostPrefix.at(-1).reason.kind, provider === 'trae' ? 'error' : 'max-tokens', `${provider}: completed malformed arguments retain their real cause`)
+    if (provider === 'trae') {
+      for (const args of ['{"workflow":{"node":1}', '{"workflow":{}</workflow><\uff5c\uff5cDSML\uff5c\uff5c parameter name="inputs">{}']) {
+        const make = finish => response(frame({ tool_calls: [{ index: 0, id: 'bad', function: { name: 'run', arguments: args } }] }, finish))
+        const malformed = await collect(consume(make('tool_calls')))
+        assert.equal(malformed.at(-1).reason.failure?.code, 'TOOL_ARGUMENTS_INVALID', '#745: a completed brace/markup error has its own failure')
+        assert.equal((await collect(consume(make('length')))).at(-1).reason.kind, 'max-tokens', '#745: explicit provider length remains authoritative')
+        assert.equal(assemble(malformed).find(block => block.type === 'tool-call')?.arguments, args, '#745: diagnostics never rewrite tool arguments')
+      }
+      const literalTags = '{"prompt":"keep <workflow> and <DSML> as literal text"}'
+      const legal = await collect(consume(response(frame({ tool_calls: [{ index: 0, id: 'legal', function: { name: 'run', arguments: literalTags } }] }, 'tool_calls'))))
+      assert.equal(legal.at(-1).reason.kind, 'tool-calls')
+      assert.equal(assemble(legal).find(block => block.type === 'tool-call')?.arguments, literalTags)
+    }
     const callDelta = { tool_calls: [{ index: 0, id: 'call-1', function: { name: 'read', arguments: '{}' } }] }
     for (const rows of [
       [frame({ content: ' \n', ...callDelta }, 'tool_calls')],

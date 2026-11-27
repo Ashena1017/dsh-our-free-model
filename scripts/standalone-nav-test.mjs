@@ -58,7 +58,7 @@ check('pageIdsFor appends plugin pages to the core whitelist', () => {
 
 check('the sidebar renders plugin pages from the summary, not a hardcoded list', () => {
   assert.match(shell, /pluginPages: PluginPage\[\] = \[\]/)
-  assert.match(shell, /label: '插件'/)
+  assert.match(shell, /label: t\('nav\.pluginsGroup'\)/)
   assert.match(shell, /items: pluginPages\.map\(entry => \(\{ id: entry\.id, name: entry\.title, icon: pageIcon\(entry\.icon\) \}\)\)/)
 })
 

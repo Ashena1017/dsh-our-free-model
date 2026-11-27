@@ -715,6 +715,7 @@ export async function startEgressRelay({ config, dataDir, log = () => {}, onDead
     }
     outlet = { kind: 'url', url: parsed }
   } else {
+    const subscriptionIntervalSeconds = normalizeSubscriptionInterval(cfg.subscriptionIntervalSeconds)
     const binary = findMihomoBinary(cfg.mihomoPath)
     const dir = path.join(dataDir, 'egress')
     fs.mkdirSync(dir, { recursive: true })
@@ -729,6 +730,7 @@ export async function startEgressRelay({ config, dataDir, log = () => {}, onDead
     const configPath = path.join(dir, 'mihomo.yaml')
     fs.writeFileSync(configPath, renderMihomoConfig({
       subscription: url,
+      subscriptionIntervalSeconds,
       mixedPort,
       apiPort,
       secret,
@@ -1290,7 +1292,16 @@ function sameSecret(given, expected) {
  * same way the relay key protects the loopback port in front of it: a listener
  * every local process can borrow is a listener that will be borrowed.
  */
-export function renderMihomoConfig({ subscription, mixedPort, apiPort, secret, auth, logFile }) {
+/** Subscription refresh cadence in seconds; health-check cadence stays separate. */
+export function normalizeSubscriptionInterval(value = 86400) {
+  if (!Number.isInteger(value) || value < 60 || value > 604800) {
+    throw new RangeError('subscription refresh interval must be an integer from 60 to 604800 seconds')
+  }
+  return value
+}
+
+export function renderMihomoConfig({ subscription, subscriptionIntervalSeconds, mixedPort, apiPort, secret, auth, logFile }) {
+  const interval = normalizeSubscriptionInterval(subscriptionIntervalSeconds)
   return [
     '# Managed by dsh-our-free-model. Edits are overwritten on the next sync.',
     `mixed-port: ${mixedPort}`,
@@ -1313,7 +1324,7 @@ export function renderMihomoConfig({ subscription, mixedPort, apiPort, secret, a
     '  egress:',
     '    type: http',
     `    url: ${JSON.stringify(subscription)}`,
-    '    interval: 86400',
+    `    interval: ${interval}`,
     '    path: ./egress-provider.yaml',
     '    health-check:',
     '      enable: true',
