@@ -92,7 +92,7 @@ if(new URLSearchParams(location.search).get('view')==='feedback'){
 
 const server = http.createServer((req, res) => {
   const send = (value, type) => { res.writeHead(200, { 'content-type': type }); res.end(value) }
-  if (req.url === '/') return send(html, 'text/html; charset=utf-8')
+  if (new URL(req.url, 'http://127.0.0.1').pathname === '/') return send(html, 'text/html; charset=utf-8')
   if (req.url === '/react.js') return send(react.outputFiles[0].text, 'application/javascript')
   if (req.url === '/client.js') return send(fs.readFileSync(path.join(root, 'client.js')), 'application/javascript')
   if (req.url === '/favicon.ico') return send('', 'image/x-icon')

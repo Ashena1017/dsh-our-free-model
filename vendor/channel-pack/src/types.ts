@@ -788,6 +788,14 @@ export interface RpcModelListEntry {
 /** RPC: 列出某 provider 的模型响应 */
 export interface RpcModelListResponse {
   models: RpcModelListEntry[]
+  /** 来源日期不是页面刷新日期；重读静态表不能称作远端目录刷新成功。 */
+  catalog?: {
+    source: 'static-snapshot'
+    snapshotDate: string
+    pricing: 'reference-only'
+    refreshSupported: false
+    refreshUnavailableReason: 'missing-authorized-catalog-contract'
+  }
 }
 
 /** RPC: 打开/关闭某个模型请求 */
