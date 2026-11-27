@@ -1,7 +1,7 @@
 {
   "version": "2.9.1",
   "base": "../",
-  "publishedAt": "2026-11-27T06:58:34.290Z",
+  "publishedAt": "2026-11-27T15:05:47.692Z",
   "notes": "",
   "files": [
     {
@@ -16,8 +16,8 @@
     },
     {
       "path": "client.js",
-      "size": 688342,
-      "sha256": "d054e85308ce044cc238affccb5c6df2275ed743ae08d5f943a77b6edefbe5d5"
+      "size": 711240,
+      "sha256": "9269fa7c6293d3d6507ca9ac1dfb8687270a934cb83c12d2e95cc8441f5b061a"
     },
     {
       "path": "cordis.patch.yml",
@@ -31,13 +31,13 @@
     },
     {
       "path": "index.js",
-      "size": 150094,
-      "sha256": "fbb34b178f8faa1e61b0ff2c6872c886e19ce304cfb522d2381e8e25e752e58f"
+      "size": 151685,
+      "sha256": "1f3a8a3c9423878451af824864fb380f1d22db0f9c4f0be0300383d0538392ff"
     },
     {
       "path": "LICENSE",
-      "size": 14219,
-      "sha256": "e2b9138f1495330ad08c8b9e804144d0e8da4e2d11425944abd0e0847792969b"
+      "size": 82740,
+      "sha256": "7dcb184937bbb14e3311f383cf6a3adbe84b95f1a66323eb36d00f8e7b522cd1"
     },
     {
       "path": "locale/en.json",
@@ -56,8 +56,8 @@
     },
     {
       "path": "src/adapter.js",
-      "size": 55471,
-      "sha256": "6dc87f3d98bee8a6a9e8115d06e6c3eb1236c0efc607bc85d3f58f5c258a5f01"
+      "size": 65533,
+      "sha256": "c8f995b38fd150be1d0abe728c3b10408ddd015f5941b72ff8a251dec1c8bd9b"
     },
     {
       "path": "src/aggregate.js",
@@ -71,13 +71,13 @@
     },
     {
       "path": "src/bun-fetch.js",
-      "size": 8958,
-      "sha256": "d09c94fb85aa9e8bece541dd1e7682b79702dcb09f58c2d5760b5a0bc9a0670c"
+      "size": 9423,
+      "sha256": "5f806851ae91dc52af26bef71272a5384a41e8c97e9904ee9ccc9d86ab39df08"
     },
     {
       "path": "src/catalog.js",
-      "size": 55854,
-      "sha256": "11128a0af47d2ff56db879cc6664cb772661a564d7f2f81bcb391f97cfac17fd"
+      "size": 58277,
+      "sha256": "975b07f7bc2688b0bcbd54909ea2a23963ee035c8433c0016c9970a71273358c"
     },
     {
       "path": "src/chan-relay.js",
@@ -91,13 +91,13 @@
     },
     {
       "path": "src/combos.js",
-      "size": 11859,
-      "sha256": "5b4439b033c60115767c94975323e6896382de4e87328b58a93199893388e368"
+      "size": 11862,
+      "sha256": "e89141b3858d42d76fb97551a45af9f8be3f082723976bb4e9fbd98c786e9dd9"
     },
     {
       "path": "src/core.js",
-      "size": 37277,
-      "sha256": "91e86ef82009abd09a64ee84c531be22f4caa845eaf7ebab44d2219621c2c665"
+      "size": 37882,
+      "sha256": "d3d74f6afe52a51d7bf128145c5ab93f706ce7d42efff5fdcc75bda2a5e39921"
     },
     {
       "path": "src/disclaimer.js",
@@ -106,8 +106,8 @@
     },
     {
       "path": "src/eac-login.js",
-      "size": 6331,
-      "sha256": "b6016dba70d2ecc2867d9869e8b63e86595711283eefbf639675f3cfc4cd8fe2"
+      "size": 7139,
+      "sha256": "baa0d2f0dc998c449c2fa187917ac131e209f3ff1479b3c9059d271e847a43f6"
     },
     {
       "path": "src/eac-user.js",
@@ -126,8 +126,8 @@
     },
     {
       "path": "src/egress.js",
-      "size": 66589,
-      "sha256": "3367e4002bfe88c83284fc915f63e9e423a789ecec998ebb9b865abe05d7e282"
+      "size": 67179,
+      "sha256": "f40db3b5913cc3185d1a35304b95c62e40bb1ad84a4ecfa24553bb5d1664a438"
     },
     {
       "path": "src/engine-parts/win32-x64.000.part",
@@ -311,8 +311,8 @@
     },
     {
       "path": "src/store.js",
-      "size": 28900,
-      "sha256": "f5a12285ffbde7a849b5413a9ce0a9306f4ee87d9a9deef23ec7d7159614d2ef"
+      "size": 28936,
+      "sha256": "ba4c0a5e7f0dac395bf82773a2542f2e7e93f2b1eade18b332fdb563ac4dcfe5"
     },
     {
       "path": "src/stream.js",
@@ -346,13 +346,13 @@
     },
     {
       "path": "src/updater.js",
-      "size": 62540,
-      "sha256": "f2223136d8292f73a56c80bb00e662fdf613028ccf516e594416c8d6e28fe28b"
+      "size": 66070,
+      "sha256": "eb1069b66dc58a72e4513a0613ce50930eac2f2b2b671cbb35ec4110ef85d26b"
     },
     {
       "path": "src/upstream.js",
-      "size": 21172,
-      "sha256": "e388ac20641cce959090b1425e80c26f894eeb11e4aaa46ade8534ad5522212d"
+      "size": 21167,
+      "sha256": "b9a98c1ee884acfd2ffab2bbb2b1643576e1f3ffb30ff67057d7b0b51b935c7f"
     },
     {
       "path": "src/vault-anchor.js",
@@ -381,8 +381,8 @@
     },
     {
       "path": "vendor/channel-pack/pack.js",
-      "size": 2864552,
-      "sha256": "996e4a19ab527bd3b16e291f8e4fdfdbd711d20d0e325bd8d5eaa5bec0feb597"
+      "size": 2654540,
+      "sha256": "b797fba8e03bd29beeb47891fa1806f8fe26b6db403c6cc39b53c06031278c7b"
     },
     {
       "path": "vendor/channel-pack/qoder-auth-wasm.wasm",
@@ -401,9 +401,9 @@
     },
     {
       "path": "vendor/magpie/NOTICE.md",
-      "size": 847991,
-      "sha256": "975b70c8d2fc53ed5928446f4b98a81cb369203894017201975b06ed554b0eca"
+      "size": 857618,
+      "sha256": "3547fdf6a52e35b28c51c987d50fd1e256a6a862966610fe954bdc725692889e"
     }
   ],
-  "signature": "xDgQwQ4yWHAlb7ZpNcJdV5xsr47BuzV00jzvwlP1nyW5kZ5AdS4JiRQs/FvYCJI5HSlc5U0aZaye0ZTjr16JDA=="
+  "signature": "q4uJvwKWIYlLt+QJThbKCj3jZQQAJfQX+J+r3jWJqB0+Z86843AkmHdsP6LCoadqVl1+Y+2vOwGJieHrFPV5Aw=="
 }
