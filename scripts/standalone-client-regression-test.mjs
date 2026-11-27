@@ -13,7 +13,7 @@ import { visibilityCopy } from '../packages/standalone/frontend/visibility-data.
 import { t as consoleT, numLocale, providerText } from '../packages/standalone/frontend/i18n.mjs'
 
 const source = fs.readFileSync(new URL('../client.js', import.meta.url), 'utf8')
-  .replace('exports.__test = {', 'exports.__test = { Shell, FreePage, ChannelCard, DICT, Roster, ModelCard, Preferences, ModelPicker, ChainEditor, ChainCard, ChainCapacity,')
+  .replace('exports.__test = {', 'exports.__test = { Shell, FreePage, ChannelCard, DICT, Roster, ModelCard, Preferences, ModelPicker, ChainEditor, ChainCard, ChainCapacity, RoutingPage,')
 let bundle
 const window = {
   __ModuleLoader__: { load: value => { bundle = value } },
@@ -51,7 +51,7 @@ const fetch = async (url, options) => {
   })
 }
 new Function('window', 'fetch', source)(window, fetch)
-const { Shell, FreePage, ChannelCard, DICT, Roster, ModelCard, Preferences, ModelPicker, ChainEditor, ChainCard, ChainCapacity } = bundle.factory(() => react).__test
+const { Shell, FreePage, ChannelCard, DICT, Roster, ModelCard, Preferences, ModelPicker, ChainEditor, ChainCard, ChainCapacity, RoutingPage } = bundle.factory(() => react).__test
 const t = key => DICT.zh[key] ?? key
 const nodes = tree => Array.isArray(tree) ? tree.flatMap(nodes)
   : tree && typeof tree === 'object' ? [tree, ...nodes(tree.children)] : []

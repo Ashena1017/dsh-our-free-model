@@ -465,7 +465,7 @@ export async function egressFetch(url, init) {
       if (!executable) {
         // This sentence is the user's only answer until they install Bun, so it
         // carries the fix inline, bilingually, without an "upstream failed" wrap.
-        const error = new Error('OpenCode 免费车道推理需要本机 Bun：请安装 Bun（https://bun.sh 或 npm i -g bun）后重试，或把 Bun 可执行文件路径写入 OUR_FREE_MODEL_BUN 环境变量。/ Install Bun or set OUR_FREE_MODEL_BUN to its executable path (OUR_FREE_MODEL_FREE_TRANSPORT=node restores the legacy transport).')
+        const error = new Error('OpenCode 免费车道推理需要本机 Bun：请安装 Bun（https://bun.sh 或 npm i -g bun）后重试，或把 Bun 可执行文件路径写入 OUR_FREE_MODEL_BUN 环境变量。安装 Bun 后上游仍可能以 403 地区限制或 429 免费额度拒绝；这属于另一层状态。/ Install Bun or set OUR_FREE_MODEL_BUN to its executable path (OUR_FREE_MODEL_FREE_TRANSPORT=node restores the legacy transport). Installing Bun may not be sufficient: the upstream can still return a 403 region refusal or a 429 free-quota refusal.')
         error.laneConfig = true
         throw error
       }

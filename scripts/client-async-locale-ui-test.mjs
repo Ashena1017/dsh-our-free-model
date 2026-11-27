@@ -20,13 +20,13 @@ if (!chromium || !esbuild) {
     }, bundle: true, write: false, format: 'iife', define: { 'process.env.NODE_ENV': '"development"' },
   })
   const original = fs.readFileSync(new URL('../client.js', import.meta.url), 'utf8')
-  const client = original.replace('exports.__test = {', 'exports.__test = { useAsync, ModelWorkspace, ChannelCard, CHANNEL_PROVIDERS, ChainEditor,')
+  const client = original.replace('exports.__test = {', 'exports.__test = { useAsync, ModelWorkspace, ChannelCard, CHANNEL_PROVIDERS, ChainEditor, RoutingPage,')
   assert.notEqual(client, original)
   const origin = 'http://127.0.0.1:41983'
   const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"></head><body><div id="root"></div>
 <script src="/react.js"></script><script>
 const React = window.fixtureReact, h = React.createElement;
-window.fixture = { mounted: true, writesAfterUnmount: 0, pending: [], intervals: new Set(), listeners: new Set() };
+window.fixture = { mounted: true, writesAfterUnmount: 0, pending: [], intervals: new Set(), listeners: new Set(), comboWrites: [], comboMode: 'ok' };
 const setIntervalOriginal = window.setInterval, clearIntervalOriginal = window.clearInterval;
 window.setInterval = (...args) => { const id = setIntervalOriginal(...args); fixture.intervals.add(id); return id; };
 window.clearInterval = id => { fixture.intervals.delete(id); clearIntervalOriginal(id); };
@@ -41,7 +41,7 @@ window.__ModuleLoader__ = { load: record => {
   window.plugin = record.factory(name => name === 'react-dom' ? fixtureReactDOM : trackedReact);
 } };
 </script><script src="/client.js"></script><script>
-const { useAsync, ModelWorkspace, ChannelCard, CHANNEL_PROVIDERS, ChainEditor, DICT, CSS } = plugin.__test;
+const { useAsync, ModelWorkspace, ChannelCard, CHANNEL_PROVIDERS, ChainEditor, RoutingPage, DICT, CSS } = plugin.__test;
 document.head.append(Object.assign(document.createElement('style'), { textContent: CSS }));
 fixture.recordsBefore = JSON.stringify(CHANNEL_PROVIDERS);
 localStorage.setItem('ofm:zcode:login-provider', 'zai');
@@ -62,6 +62,7 @@ function App() {
   const t = Object.assign(key => DICT[language][key], { locale: language });
   return h('main', { className: 'ofm_root' },
     mode === 'async' ? h(AsyncView) : mode === 'workspace' ? h(ModelWorkspace, { t, summary })
+      : mode === 'routing' ? h(RoutingPage, { t })
       : h(React.Fragment, null,
         h('section', { id: 'channels' }, CHANNEL_PROVIDERS.map(channel => h(ChannelCard, { key: channel.id, channel, t, compact: true, rpc: null }))),
         h('section', { id: 'draft' }, h(ChainEditor, { t, chain, models, onSave() {}, onCancel() {} }))));
@@ -75,10 +76,11 @@ root.render(h(App));
   const open = async (check, mode, deferStart = false) => {
     const page = await browser.newPage({ viewport: { width: 1100, height: 900 } })
     check.after(() => page.close())
-    const errors = [], unexpected = [], requests = []
+    const errors = [], unexpected = [], requests = [], downloads = []
     let startRequested
     const start = new Promise(resolve => { startRequested = resolve })
     const failStart = route => route.fulfill({ status: 503, json: { error: 'Synthetic raw diagnostic 原因 <detail>' } })
+    page.on('download', download => downloads.push(download))
     page.on('pageerror', error => errors.push(error.message))
     await page.route('**/*', async route => {
       const url = new URL(route.request().url())
@@ -93,6 +95,25 @@ root.render(h(App));
           if (!deferStart) return failStart(route)
           return
         }
+        if (mode === 'routing' && url.pathname === '/api/our-free-model/combos' && route.request().method() === 'GET') {
+          requests.push(url.pathname)
+          return route.fulfill({ json: {
+            combos: [{ id: 'combo:existing', name: 'Existing', models: ['model-a'], strategy: 'fallback', stickyLimit: 1, enabled: true }],
+            models: [{ id: 'model-a', name: 'Model A', channel: 'free' }],
+            usable: [{ id: 'combo:existing', models: ['model-a'] }],
+            strategies: ['fallback', 'round-robin'],
+          } })
+        }
+        if (mode === 'routing' && url.pathname === '/api/our-free-model/combos' && route.request().method() === 'POST') {
+          const body = JSON.parse(route.request().postData() ?? '{}')
+          await page.evaluate(value => fixture.comboWrites.push(value), body)
+          if (await page.evaluate(() => fixture.comboMode) === 'fail') {
+            return route.fulfill({ status: 400, json: { error: 'Synthetic import refusal' } })
+          }
+          return route.fulfill({ json: {
+            ok: true, combos: body.combos, usable: body.combos.map(row => ({ id: row.id, models: row.models })),
+          } })
+        }
       }
       unexpected.push(url.href)
       await route.abort()
@@ -105,7 +126,7 @@ root.render(h(App));
       assert.deepEqual(unexpected, [])
       assert.equal(await page.evaluate(() => JSON.stringify(Object.entries(localStorage))), await page.evaluate(() => fixture.storageBefore))
     }
-    return { page, settle, verify, requests, failStart: async () => failStart(await start) }
+    return { page, settle, verify, requests, downloads, failStart: async () => failStart(await start) }
   }
   try {
     await test('rendered reloads keep the latest response and dispose pending manual reloads', { timeout: 30000 }, async check => {
@@ -162,6 +183,62 @@ root.render(h(App));
       assert.ok(await page.evaluate(() => fixture.intervals.size > 0))
       await page.evaluate(() => fixture.unmount())
       assert.equal(await page.evaluate(() => fixture.intervals.size), 0)
+      await verify()
+    })
+    await test('rendered combo JSON export and import stay scoped, validated and replace-only', { timeout: 30000 }, async check => {
+      const { page, settle, verify, requests, downloads } = await open(check, 'routing')
+      await page.getByText('Existing', { exact: true }).waitFor()
+      assert.match(await page.locator('main').innerText(), /contains only chain definitions/)
+      assert.equal(requests.filter(path => path.endsWith('/combos')).length, 1)
+
+      const downloadPromise = page.waitForEvent('download')
+      await page.getByRole('button', { name: 'Export JSON' }).click()
+      const download = await downloadPromise
+      assert.match(download.suggestedFilename(), /^ofm-combos-\d{4}-\d{2}-\d{2}\.json$/)
+      const exported = JSON.parse(fs.readFileSync(await download.path(), 'utf8'))
+      assert.deepEqual(exported, {
+        format: 'ofm-combos/v1',
+        combos: [{ id: 'combo:existing', name: 'Existing', models: ['model-a'], strategy: 'fallback', stickyLimit: 1, enabled: true }],
+      })
+      assert.equal(downloads.length, 1)
+
+      const chooser = page.locator('input[type=file]')
+      await chooser.setInputFiles({ name: 'invalid.json', mimeType: 'application/json', buffer: Buffer.from('{"secret":"do-not-use","combos":"wrong"}') })
+      await page.getByRole('alert').waitFor()
+      assert.match(await page.getByRole('alert').innerText(), /does not match the required shape/)
+      assert.equal(await page.evaluate(() => fixture.comboWrites.length), 0)
+
+      page.once('dialog', dialog => dialog.dismiss())
+      await chooser.setInputFiles({ name: 'cancelled.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify({
+        format: 'ofm-combos/v1', secret: 'must-not-be-sent',
+        combos: [{ name: 'Cancelled', models: ['model-a'], strategy: 'fallback' }],
+      })) })
+      await settle()
+      assert.equal(await page.evaluate(() => fixture.comboWrites.length), 0)
+
+      page.once('dialog', async dialog => {
+        assert.match(dialog.message(), /replace all 1 current chain/)
+        assert.match(dialog.message(), /Accounts, secrets and other settings are not changed/)
+        await dialog.accept()
+      })
+      await chooser.setInputFiles({ name: 'valid.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify({
+        format: 'ofm-combos/v1', secret: 'must-not-be-sent',
+        combos: [{ name: 'Imported', models: ['model-a'], strategy: 'round-robin', stickyLimit: 2, enabled: true }],
+      })) })
+      await page.getByText(/Imported 1 chain/).waitFor()
+      assert.deepEqual(await page.evaluate(() => fixture.comboWrites[0]), {
+        combos: [{ name: 'Imported', models: ['model-a'], strategy: 'round-robin', stickyLimit: 2, enabled: true }],
+      })
+      assert.doesNotMatch(JSON.stringify(await page.evaluate(() => fixture.comboWrites)), /must-not-be-sent|secret/)
+
+      await page.evaluate(() => { fixture.comboMode = 'fail' })
+      page.once('dialog', dialog => dialog.accept())
+      await chooser.setInputFiles({ name: 'server-failure.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify({
+        format: 'ofm-combos/v1', combos: [{ name: 'Rejected', models: ['model-a'], strategy: 'fallback' }],
+      })) })
+      await page.getByRole('alert').waitFor()
+      assert.match(await page.getByRole('alert').innerText(), /Synthetic import refusal/)
+      assert.equal(await page.evaluate(() => fixture.comboWrites.length), 2)
       await verify()
     })
     console.log(`client-async-locale-ui: Chromium ${browser.version()}, React ${require('react/package.json').version}; synthetic fixtures only`)

@@ -60,6 +60,7 @@ window.__ModuleLoader__.load({
         'hint.listed': '来自渠道目录，未做逐模型推理测试；不代表对话或工具调用成功。',
         'hint.region': '该模型按出口地区放行。开启网络代理后，插件会在下一次探测自动把它移入可用分组。',
         'hint.unknown': '尚未探测，默认保持可达。',
+        'hint.transportUnavailable': '本机传输未就绪；这不等于上游模型拒绝。安装或修复本机传输后重新测试。',
         'hint.hidden': '探测显示网关点名了它却不路由它，因此已从模型选择器中移除；某一次探测重新通过，它会自己回来。',
         'hint.sharedBudget': '该模型思考不可关闭：思考与可见回答共用同一份额度，档位越低留给正文的越少。',
         'tag.vision': '视觉',
@@ -856,6 +857,10 @@ window.__ModuleLoader__.load({
         'sub.accounts': '{n} 个账号',
         'nav.tab.saver': '省 Token',
         'nav.tab.routing': '路由',
+        'nav.group.daily': '日常',
+        'nav.group.lanes': '模型车道',
+        'nav.group.external': '对外与工具',
+        'nav.group.ops': '运维',
         'agg.title': '聚合渠道',
         'agg.sub': '第三方提供商',
         'agg.registryCount': '注册表 {n} 家',
@@ -1022,6 +1027,16 @@ window.__ModuleLoader__.load({
         'routing.savedBody': '链路已保存。',
         'routing.failed': '保存失败',
         'routing.loadFailed': '无法读取链路设置',
+        'routing.ioExport': '导出 JSON',
+        'routing.ioImport': '导入 JSON',
+        'routing.ioNote': '组合链 JSON 只包含链路定义，不含账号、密钥或其它设置。导入会整体替换当前链路，不会合并；导入后可在列表中检查实际解析结果。',
+        'routing.ioInvalid': '无法导入：文件不是有效的组合链 JSON，或格式不符合要求。',
+        'routing.ioTooBig': '组合链 JSON 超过 2 MiB，未导入。',
+        'routing.ioExported': '已开始下载组合链 JSON。',
+        'routing.ioImported': '已导入 {n} 条组合链。',
+        'routing.ioConfirm': '导入会整体替换当前的 {n} 条组合链，不会合并，也不会改动账号、密钥或其它设置。继续？',
+        'routing.ioExportFailed': '导出组合链 JSON 失败。',
+        'routing.ioImportFailed': '导入组合链失败：{reason}',
         'routing.cancel': '取消',
         'routing.edit': '编辑',
         'routing.delete': '删除',
@@ -1063,6 +1078,7 @@ window.__ModuleLoader__.load({
         'hint.listed': 'Listed by the channel; inference has not been tested. This does not confirm chat or tool use.',
         'hint.region': 'This model is gated by egress country. Once a proxy changes your egress, the next probe moves it into the available group by itself.',
         'hint.unknown': 'Not probed yet, so it stays reachable.',
+        'hint.transportUnavailable': 'The local transport is unavailable. This is not an upstream model verdict; repair the local transport and test again.',
         'hint.hidden': 'The gateway names it but refuses to route it, so it is out of the model picker. It returns by itself as soon as a probe gets through.',
         'hint.sharedBudget': 'Thinking cannot be switched off on this model, so thinking and the visible answer share one ceiling — a lower rung leaves the answer less room.',
         'tag.vision': 'Vision',
@@ -1858,6 +1874,10 @@ window.__ModuleLoader__.load({
         'sub.accounts': '{n} accounts',
         'nav.tab.saver': 'Token savers',
         'nav.tab.routing': 'Routing',
+        'nav.group.daily': 'Daily',
+        'nav.group.lanes': 'Model lanes',
+        'nav.group.external': 'External tools',
+        'nav.group.ops': 'Operations',
         'agg.title': 'Aggregate providers',
         'agg.sub': 'Third-party providers',
         'agg.registryCount': '{n} in the registry',
@@ -2024,6 +2044,16 @@ window.__ModuleLoader__.load({
         'routing.savedBody': 'The chain is saved.',
         'routing.failed': 'Not saved',
         'routing.loadFailed': 'Cannot read the chain settings',
+        'routing.ioExport': 'Export JSON',
+        'routing.ioImport': 'Import JSON',
+        'routing.ioNote': 'The chain JSON contains only chain definitions, with no accounts, secrets or other settings. Import replaces every current chain rather than merging them; review the resolved models in the list afterwards.',
+        'routing.ioInvalid': 'Cannot import: the file is not valid chain JSON or does not match the required shape.',
+        'routing.ioTooBig': 'The chain JSON exceeds 2 MiB and was not imported.',
+        'routing.ioExported': 'Chain JSON download started.',
+        'routing.ioImported': 'Imported {n} chain(s).',
+        'routing.ioConfirm': 'Import will replace all {n} current chain(s) rather than merging them. Accounts, secrets and other settings are not changed. Continue?',
+        'routing.ioExportFailed': 'Could not export the chain JSON.',
+        'routing.ioImportFailed': 'Could not import the chains: {reason}',
         'routing.cancel': 'Cancel',
         'routing.edit': 'Edit',
         'routing.delete': 'Delete',
@@ -2420,6 +2450,9 @@ window.__ModuleLoader__.load({
 .ofm_navmark{width:26px;height:26px;border-radius:9px;display:grid;place-items:center;flex:none;background:linear-gradient(145deg,var(--dsw-alias-state-business-primary),color-mix(in srgb,var(--dsw-alias-state-business-primary) 42%,#3ECFA0));box-shadow:0 4px 12px color-mix(in srgb,var(--dsw-alias-state-business-primary) 40%,transparent),inset 0 1px 0 rgb(255 255 255 / 22%)}
 .ofm_navmark svg{width:16px;height:16px;fill:#fff}
 .ofm_tabs{position:relative;grid-column:1 / -1;display:flex;flex-wrap:wrap;gap:2px;padding:3px;border-radius:13px;border:1px solid color-mix(in srgb,var(--dsw-alias-border-l1) 80%,transparent);background:color-mix(in srgb,var(--dsw-alias-bg-layer-1) 62%,transparent);box-shadow:inset 0 1px 2px rgb(0 0 0 / 4%)}
+.ofm_tabgroup{display:flex;align-items:center;flex-wrap:wrap;min-width:0;gap:2px;padding:1px 5px 1px 2px;border-right:1px solid var(--dsw-alias-border-l1)}
+.ofm_tabgroup:last-child{border-right:0}
+.ofm_tabgroupname{font-size:9px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--dsw-alias-label-tertiary);padding:0 4px;writing-mode:vertical-rl;transform:rotate(180deg)}
 .ofm_tabglider{position:absolute;top:0;left:0;border-radius:10px;background:linear-gradient(150deg,color-mix(in srgb,var(--dsw-alias-bg-layer-3) 92%,transparent),color-mix(in srgb,var(--dsw-alias-bg-layer-2) 88%,transparent));box-shadow:0 3px 10px rgb(0 0 0 / 14%),inset 0 1px 0 rgb(255 255 255 / 9%);transition:transform .34s cubic-bezier(.22,.61,.36,1),width .34s cubic-bezier(.22,.61,.36,1),height .34s cubic-bezier(.22,.61,.36,1);pointer-events:none}
 .ofm_tab{position:relative;z-index:1;font:inherit;font-size:12px;font-weight:600;padding:6px 13px;border-radius:10px;border:0;background:transparent;color:var(--dsw-alias-label-secondary);cursor:pointer;white-space:nowrap;transition:color .2s ease}
 .ofm_tab[data-on="true"]{color:var(--dsw-alias-label-primary)}
@@ -3943,6 +3976,8 @@ window.__ModuleLoader__.load({
         listed ? h('p', { className: 'ofm_note' }, t('hint.listed'))
           : manual && m.availability !== 'available' ? h('p', { className: 'ofm_note' }, m.detail || t(stateKey))
           : m.availability === 'region-blocked' ? h('p', { className: 'ofm_note' }, t('hint.region'))
+          : m.availabilityState === 'transport-unavailable'
+            ? h('p', { className: 'ofm_note' }, m.detail || t('hint.transportUnavailable'))
           : m.availability === 'unknown' ? h('p', { className: 'ofm_note' }, t('hint.unknown'))
             : m.availability === 'unavailable' ? h('p', { className: 'ofm_note', title: m.detail ?? '' }, t('hint.hidden'))
               : h('div', { className: 'ofm_metrics' },
@@ -8226,9 +8261,21 @@ window.__ModuleLoader__.load({
       const panel = usePanel(() => api('/combos'), [])
       const [editing, setEditing] = useState(null)
       const [confirm, setConfirm] = useState('')
+      const [ioBusy, setIoBusy] = useState('')
+      const [ioError, setIoError] = useState('')
+      const importInput = useRef(null)
+      const downloads = useRef(new Map())
       const chains = panel.data?.combos ?? []
       const models = panel.data?.models ?? []
       const lookup = useMemo(() => new Map(models.map(row => [row.id, row])), [models])
+
+      useEffect(() => () => {
+        for (const [url, timer] of downloads.current) {
+          clearTimeout(timer)
+          URL.revokeObjectURL(url)
+        }
+        downloads.current.clear()
+      }, [])
 
       const resolvedOf = chain => {
         const answered = (panel.data?.usable ?? []).find(row => row.id === chain.id)
@@ -8255,6 +8302,64 @@ window.__ModuleLoader__.load({
         setConfirm('')
         showToast({ title: t('routing.saved'), body: t('routing.savedBody'), holdMs: 3200 })
       }
+      const exportFile = () => {
+        if (ioBusy !== '') return
+        setIoBusy('export'); setIoError('')
+        try {
+          const blob = new Blob([JSON.stringify({ format: 'ofm-combos/v1', combos: chains }, null, 2)], { type: 'application/json' })
+          const url = URL.createObjectURL(blob)
+          try {
+            const link = document.createElement('a')
+            link.href = url
+            link.download = `ofm-combos-${new Date().toISOString().slice(0, 10)}.json`
+            link.click()
+            const timer = setTimeout(() => { URL.revokeObjectURL(url); downloads.current.delete(url) }, 60_000)
+            downloads.current.set(url, timer)
+          } catch (error) {
+            URL.revokeObjectURL(url)
+            throw error
+          }
+          showToast({ title: t('routing.ioExport'), body: t('routing.ioExported'), holdMs: 3200 })
+        } catch (error) {
+          setIoError(t('routing.ioExportFailed'))
+        } finally {
+          setIoBusy('')
+        }
+      }
+      const importFile = event => {
+        const selected = event.target.files?.[0]
+        event.target.value = ''
+        if (!selected || ioBusy !== '') return
+        setIoBusy('import'); setIoError('')
+        return (async () => {
+          try {
+            if (selected.size > 2 * 1024 * 1024) { setIoError(t('routing.ioTooBig')); return }
+            let payload
+            try { payload = JSON.parse((await selected.text()).replace(/^\uFEFF/, '')) } catch {
+              setIoError(t('routing.ioInvalid')); return
+            }
+            const rows = payload?.format === 'ofm-combos/v1' && Array.isArray(payload.combos)
+              ? payload.combos
+              : Array.isArray(payload) ? payload : null
+            if (rows === null || rows.some(row => row === null || typeof row !== 'object'
+              || typeof row.name !== 'string' || row.name.trim() === ''
+              || !Array.isArray(row.models) || row.models.length === 0
+              || row.models.length > 1000
+              || row.models.some(id => typeof id !== 'string' || id.trim() === '' || id.length > 300))) {
+              setIoError(t('routing.ioInvalid')); return
+            }
+            if (!window.confirm(t('routing.ioConfirm').replace('{n}', String(chains.length)))) return
+            const answer = await post('/combos', { combos: rows })
+            panel.patch({ combos: answer.combos, usable: answer.usable })
+            panel.reload()
+            showToast({ title: t('routing.ioImport'), body: t('routing.ioImported').replace('{n}', String(answer.combos.length)), holdMs: 3200 })
+          } catch (error) {
+            setIoError(t('routing.ioImportFailed').replace('{reason}', String(error?.message ?? error)))
+          } finally {
+            setIoBusy('')
+          }
+        })()
+      }
       // A fresh chain is the same editor with an empty draft: the fields, the
       // member list and the validation are identical, only the id is absent.
       const blank = { name: '', models: [], strategy: 'fallback', stickyLimit: 1, enabled: true }
@@ -8262,13 +8367,18 @@ window.__ModuleLoader__.load({
       return h('div', { className: 'ofm_page' },
         h(PageHero, { title: t('routing.title'), sub: t('routing.sub') },
           h('div', { className: 'ofm_pills' },
-            h(Pill, null, t('routing.chains') + ' ' + String(chains.length)))),
+            h(Pill, null, t('routing.chains') + ' ' + String(chains.length)),
+            h(Button, { kind: 'ghost', disabled: ioBusy !== '', busy: ioBusy === 'export', onClick: exportFile }, t('routing.ioExport')),
+            h(Button, { kind: 'ghost', disabled: ioBusy !== '', busy: ioBusy === 'import', onClick: () => importInput.current?.click() }, t('routing.ioImport')),
+            h('input', { ref: importInput, type: 'file', hidden: true, disabled: ioBusy !== '', accept: '.json,application/json', onChange: importFile }))),
         panel.status === 'loading' ? h(PanelSkeleton) : null,
         panel.status === 'error'
           ? h(PanelError, { t, title: t('routing.loadFailed'), message: panel.error, onRetry: panel.reload })
           : null,
         panel.status === 'ready'
           ? h(Section, { title: t('routing.chains'), hint: t('routing.chainsHint') },
+            h('p', { className: 'ofm_note' }, t('routing.ioNote')),
+            ioError === '' ? null : h('div', { className: 'ofm_callout ofm_error', role: 'alert' }, ioError),
             // The editor renders full width above the list rather than inside a
             // grid cell: a chain's member list and its picker need the room, and a
             // form squeezed into a 252 px column is a form nobody can order.
@@ -8665,21 +8775,30 @@ window.__ModuleLoader__.load({
       const reprobe = () => runCatalog('/reprobe')
 
       const tabs = [
-        ['free', t('nav.tab.free'), freePoolView(data).total],
-        ['eac', t('nav.tab.eac'), data.catalog.filter(m => m.channel === 'eac').length],
-        ['channels', t('nav.tab.channels'), CHANNEL_PROVIDERS.length],
-        ['aggregate', t('nav.tab.aggregate'), data.catalog.filter(m => m.channel === 'aggregate').length],
-        ['workspace', t('nav.tab.workspace'), data.catalog.filter(m => m.channel === 'subscription').length],
-        ['extensions', t('nav.tab.extensions'), (data.extensions?.installed ?? []).length],
-        ['saver', t('nav.tab.saver'), null],
-        ['routing', t('nav.tab.routing'), data.catalog.filter(m => m.channel === 'combo').length],
-        ['ledger', t('nav.tab.ledger'), null],
-        ['logs', t('nav.tab.logs'), null],
-        ['gateway', t('nav.tab.gateway'), null],
-        ['upgrade', t('nav.tab.upgrade'), null],
-        ['picks', t('nav.tab.picks'), null],
-        ...(FEEDBACK_ENABLED ? [['feedback', t('nav.tab.feedback'), null]] : []),
+        ['nav.group.daily', [
+          ['free', t('nav.tab.free'), freePoolView(data).total],
+          ['routing', t('nav.tab.routing'), data.catalog.filter(m => m.channel === 'combo').length],
+          ['saver', t('nav.tab.saver'), null],
+        ]],
+        ['nav.group.lanes', [
+          ['eac', t('nav.tab.eac'), data.catalog.filter(m => m.channel === 'eac').length],
+          ['channels', t('nav.tab.channels'), CHANNEL_PROVIDERS.length],
+          ['aggregate', t('nav.tab.aggregate'), data.catalog.filter(m => m.channel === 'aggregate').length],
+          ['workspace', t('nav.tab.workspace'), data.catalog.filter(m => m.channel === 'subscription').length],
+          ['extensions', t('nav.tab.extensions'), (data.extensions?.installed ?? []).length],
+        ]],
+        ['nav.group.external', [
+          ['gateway', t('nav.tab.gateway'), null],
+          ['picks', t('nav.tab.picks'), null],
+        ]],
+        ['nav.group.ops', [
+          ['ledger', t('nav.tab.ledger'), null],
+          ['logs', t('nav.tab.logs'), null],
+          ['upgrade', t('nav.tab.upgrade'), null],
+          ...(FEEDBACK_ENABLED ? [['feedback', t('nav.tab.feedback'), null]] : []),
+        ]],
       ]
+      const flatTabs = tabs.flatMap(([, rows]) => rows)
       const nav = h('nav', { className: 'ofm_nav' },
         h('span', { className: 'ofm_navbrand' },
           h('span', { className: 'ofm_navmark', 'aria-hidden': 'true' },
@@ -8689,20 +8808,22 @@ window.__ModuleLoader__.load({
           const steps = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }
           if (!Object.hasOwn(steps, event.key) && event.key !== 'Home' && event.key !== 'End') return
           event.preventDefault()
-          const index = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1
-            : (tabs.findIndex(([id]) => id === tab) + steps[event.key] + tabs.length) % tabs.length
-          setTab(tabs[index][0])
+          const index = event.key === 'Home' ? 0 : event.key === 'End' ? flatTabs.length - 1
+            : (flatTabs.findIndex(([id]) => id === tab) + steps[event.key] + flatTabs.length) % flatTabs.length
+          setTab(flatTabs[index][0])
           event.currentTarget.querySelectorAll('[role="tab"]')[index]?.focus()
         } },
           h('span', { className: 'ofm_tabglider', 'aria-hidden': 'true',
             style: { transform: `translate(${glider.left}px, ${glider.top}px)`, width: `${glider.width}px`, height: `${glider.height}px` } }),
-          tabs.map(([id, label, num]) => h('button', {
-            key: id, type: 'button', role: 'tab', 'aria-selected': tab === id ? 'true' : 'false', className: 'ofm_tab', 'data-on': tab === id ? 'true' : 'false',
-            tabIndex: tab === id ? 0 : -1,
-            ref: node => { tabRefs.current[id] = node },
-            id: `ofm-tab-${id}`, 'aria-controls': 'ofm-workspace',
-            onClick: () => setTab(id),
-          }, label, num === null ? null : h('span', { className: 'ofm_tabnum' }, String(num))))),
+          tabs.map(([group, rows]) => h('div', { key: group, className: 'ofm_tabgroup', role: 'group', 'aria-label': t(group) },
+            h('span', { className: 'ofm_tabgroupname', 'aria-hidden': 'true' }, t(group)),
+            rows.map(([id, label, num]) => h('button', {
+              key: id, type: 'button', role: 'tab', 'aria-selected': tab === id ? 'true' : 'false', className: 'ofm_tab', 'data-on': tab === id ? 'true' : 'false',
+              tabIndex: tab === id ? 0 : -1,
+              ref: node => { tabRefs.current[id] = node },
+              id: `ofm-tab-${id}`, 'aria-controls': 'ofm-workspace',
+              onClick: () => setTab(id),
+            }, label, num === null ? null : h('span', { className: 'ofm_tabnum' }, String(num))))))),
         h('div', { className: 'ofm_navtools', title: t('effects.hint') },
           h(Switch, { checked: effects, label: t('effects.enabled'), onChange: toggleEffects }),
           h(StarButton, { t })))
